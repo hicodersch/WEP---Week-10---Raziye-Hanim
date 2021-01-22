@@ -11,163 +11,166 @@ function createHeader() {
     </a>
   </nav>`
 }
+
 /**
  * Ürün listesini olusturur.
- * @param {Array} pList 
+ * @param {Array} pList
  */
 function createProductList(pList) {
-    let productTable = " "
-    productTable = `
-  <h2>Product List</h2>
-  <table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Calori</th>
-            <th scope="col">EXP</th>
-            <th scope="col">Price</th>
-            <th scope="col">Product</th>
-            <th scope="col"></th>
-        </tr>
-    </thead>
-    <tbody>`
-    pList.map(product => {
-        productTable +=
-            `<tr>
+    return `
+    <h2>Product List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Calori</th>
+                <th scope="col">EXP</th>
+                <th scope="col">Price</th>
+                <th scope="col">Product</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+        ${createOrderLines(pList)}
+        </tbody>
+    </table>
+    `
+}
+/**
+ * Satın alınma sepetini oluştur.
+ * @param {*} pList 
+ */
+function createOrderLines(pList) {
+    return pList.map(product => `
+    <tr>
         <td><strong>${product.productName}<strong></td>
         <td>${product.totalCalories}</td>
-        <td>${product.expireDate.toLocaleDateString("ch-CH")}</td>
+        <td>${product.expireDate.toLocaleDateString('ch-CH')}</td>
         <td>${product.price}</td>
         <td><img src="${product.productImage}" width=70px></img></td>
         <td><button id="${product.productName}" type="button" class="add btn btn-secondary">Buy</button></td>
-      </tr>`
-    })
-    productTable +=
-        `</tbody>
-                  </table>`
-    return productTable
+    </tr>
+  `).join('');
 }
+
 /**
  * Alisveris Sepetini Olusturur
- * @param {Array} pShopList 
+ * @param {Array} pShopList
  */
 function showShoppingBox(pShopList) {
-    let totalPrice = 0;
-    let shoppingTable = " "
-    shoppingTable = `
-  <h2>Shopping Box</h2>
-  <table class="table">
-    <thead>
+    return `
+    <h2>Shopping Box</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Calori</th>
+                <th scope="col">Price</th>
+                <th scope="col">Count</th>
+                <th scope="col">Product</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>  
+        ${combineProduct(pShopList)}
+        ${getFooter(pShopList)}
+        `
+}
+
+function getFooter(pShopList) {
+    return `
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Calori</th>
-            <th scope="col">Price</th>
-            <th scope="col">Count</th>
-            <th scope="col">Product</th>
-            <th scope="col"></th>
+        <td></td>
+        <td></td>
+        <td><strong> Total Price  <strong></td>
+        <td id="total-price"> ${getTotal(pShopList).toFixed(2)} CHF </td>
         </tr>
-    </thead>
-    <tbody>
-    `
-    pShopList.map((product, index) => {
-        totalPrice += product.price;
-    })
-    shoppingTable += combineProduct(pShopList);
-    shoppingTable +=
-        `<tr>
-        <td></td>
-        <td></td>
-            <td><strong>Total Price<strong></td>
-            <td id="total-price">${totalPrice.toFixed(2)} CHF</td>
-
-            </tbody>
-            </table>
-            <table class="table">
-            <tbody>
-            <td></td> 
-            <td>            <button class ="button-pay">Finish Shopping</button>  </td>
-           <td></td> 
-            <td>        <button  id="delete-cancel" class ="button-cancel">CANCEL</button>    </td>
-        </tr> 
-        </tbody>
-        </table>`
-
-
-    return shoppingTable
+    </tbody>
+    </table>
+   `
 }
 /**
- * Aynı Ürünleri bir araya getirme islemini yapar 
+ * Get total-price
+ * @param {*} pShopList 
  */
-function combineProduct(pShopList){
-return  pShopList
-.map((product, index, items) => {
-    const count = items.filter(a => a == product).length;
-    return { key: product, value: count ,index: index};
-})
-.reduce((sum, current) => {
-    if (!sum.map(a => a.key).includes(current.key)) {
-        sum.push(current);
-    }
-    return sum;
-}, [])
+function getTotal(pShopList) {
+    return pShopList.reduce((total, product) => total + product.price, 0)
+}
 
-.map((product,index) => {
-    return `
-    <tr class="sil">
-    <td><strong>${product.key.productName}<strong></td>
-    <td>${product.key.totalCalories}</td>
-    <td>${product.key.price}</td>
-    <td>${product.value}</td>
-    <td><img src="${product.key.productImage}" width=50px></img></td>
-    <td><button id="delete-${product.index}" type="button" class="delete btn btn-secondary">Delete</button></td>
-    </tr>
+/**
+ * Aynı Ürünleri bir araya getirme islemini yapar
+ */
+function combineProduct(pShopList) {
+    return pShopList
+        .map((product, index, items) => {
+            const count = items.filter(a => a == product).length
+            return { key: product, value: count, index: index }
+        })
+        .reduce((sum, current) => {
+            if (!sum.map(a => a.key).includes(current.key)) {
+                sum.push(current)
+            }
+            return sum
+        }, [])
+
+    .map(product => {
+        return `
+        <tr class="sil">
+        <td><strong> ${product.key.productName} <strong></td> 
+        <td>${product.key.totalCalories} </td><td> ${product.key.price} </td> 
+        <td>${product.value} </td><td><img src="${product.key.productImage}" width= 50px> </img></td>
+        <td><button id= "delete-${product.index}" type = "button" class= "delete btn btn-secondary">Delete</button></td>
+        </tr>
     `
-})
-.join('');
+    }).join('')
 }
 
 function createEmptyShoppingSide() {
-    return `
-    <section id="empty-box">
-    <p>Sepetiniz Bos</p>
-    <div><img src="https://www.libresensor.com/Content/Icons/icon-basket.png"></img></div>
+    return ` 
+    <section id= "empty-box">
+        <p>Your Cart is Empty </p> 
+        <div> <img src= "https://www.libresensor.com/Content/Icons/icon-basket.png"> </img></div>
     </section>  `
 }
+
 /**
  * Ana yapiyi UI'da görüntüler
- * @param {Array} pList 
+ * @param {Array} pList
  */
 function createUI(pList) {
-    headerElement.innerHTML = createHeader();
-    productElement.innerHTML = createProductList(pList);
+    headerElement.innerHTML = createHeader()
+    productElement.innerHTML = createProductList(pList)
 }
+
 /**Functions */
 /**
  * Alisveris Listesi Arrayini Olusturur
- * @param {*} event 
+ * @param {*} event
  */
 function createShoppingList(event) {
     productList.filter(product => {
         if (event.target.id === product.productName) {
-            shoppingList.push(product);
+            shoppingList.push(product)
         }
     })
     return shoppingList
 }
+
 /**
- * Ürün silme islemini yapar 
- * @param {*} event 
+ * Ürün silme islemini yapar
+ * @param {*} event
  */
 function deleteProduct(event) {
     shoppingList.map((product, index) => {
         if (event.target.id === `delete-${index}`) {
-            const productIndex = shoppingList.indexOf(product);
-            shoppingList.splice(productIndex, 1);
-            shoppingElement.innerHTML = showShoppingBox(shoppingList);
+            const productIndex = shoppingList.indexOf(product)
+            shoppingList.splice(productIndex, 1)
+            shoppingElement.innerHTML = showShoppingBox(shoppingList)
             viewEmptyShoppingBox()
         }
     })
 }
+
 /**
  * Bos sepeti görüntüler
  */
@@ -176,32 +179,35 @@ function viewEmptyShoppingBox() {
         shoppingElement.innerHTML = createEmptyShoppingSide()
     }
 }
+
 /**Data Model */
 /**
  * Alisveris sepetine ürün ekler
  */
 function addProduct() {
     viewEmptyShoppingBox()
-    productElement.addEventListener("click", (event) => {
-        if (event.target.className === "add btn btn-secondary") {
+    productElement.addEventListener('click', event => {
+        if (event.target.className === 'add btn btn-secondary') {
             createShoppingList(event)
-            shoppingElement.innerHTML = showShoppingBox(shoppingList);
+            shoppingElement.innerHTML = showShoppingBox(shoppingList)
         }
     })
 }
+
 /**
  * Silinen ürünü DOM'dan kaldirir
  */
 function deleteProductEvent() {
-    shoppingElement.addEventListener("click", (event) => {
-        if (event.target.className === "delete btn btn-secondary") {
-            deleteProduct(event);
+    shoppingElement.addEventListener('click', event => {
+        if (event.target.className === 'delete btn btn-secondary') {
+            deleteProduct(event)
         }
     })
 }
+
 /**Initialization */
 function start() {
-    createUI(productList);
-    addProduct();
-    deleteProductEvent();
+    createUI(productList)
+    addProduct()
+    deleteProductEvent()
 }
