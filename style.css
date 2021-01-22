@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(rgb(202, 222, 235), rgb(140, 161, 165));
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.product-list {
+  border-radius: 5px;
+  box-shadow: 2px 5px 5px;
+  background-color: rgb(245, 245, 235);
+  margin-right: 20px;
+}
+
+.shopping-box {
+  border-radius: 5px;
+  box-shadow: 2px 5px 5px;
+  background-color: rgb(245, 245, 235);
+}
+
+body {
+  background: linear-gradient(to right, #4b4d50, #196464);
+}
+
+.navbar-brand {
+  padding: 2vw;
+}
+
+h2 {
+  text-align: center;
+}
+
+#empty-box {
+  text-decoration: grey;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-left: 12vw;
+  position: fixed;
+}
+
+#logo {
+  font-size: 40px;
+}
+
+* td {
+  margin-left: auto;
+  margin-right: auto;
+  vertical-align: middle;
+}
+* button {
+  width: 100px;
+  height: 60px;
+  background: rgb(7, 73, 128);
+  font-family: verdana;
+  font-size: 18px;
+  color: white;
+  border-radius: 5px 5px 5px 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: gray;
+  cursor: pointer;
+  outline: none;
+}
+.button-pay {
+  width: 200px;
+  height: 60px;
+  border-radius: 5px;
+  box-shadow: 2px 5px 5px;
+  background: rgb(185, 59, 59);
+  font-family: verdana;
+  font-size: 18px;
+  color: white;
+}
+.button-cancel {
+  width: 200px;
+  height: 60px;
+  border-radius: 5px;
+  box-shadow: 2px 5px 5px;
+  background: rgb(88, 128, 173);
+  font-family: verdana;
+  font-size: 18px;
+  color: rgb(39, 36, 53);
+}
